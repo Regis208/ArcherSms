@@ -11,7 +11,7 @@
 - [Acknowledgments](#acknowledgments)
 
 > [!Warning]  
-> The MR200 have only one user, so the API when connecting will disconnect the current connected user if there's on. If you want to use the admin interface without risk stop the service dduring your maintenance.
+> The MR200 have only one user, so the API when connecting will disconnect the current connected user if there's one. If you want to use the admin interface without risk stop the service during your maintenance.
 
 ### tested versions
 
