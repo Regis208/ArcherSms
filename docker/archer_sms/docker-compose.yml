@@ -1,0 +1,15 @@
+services:
+  mr200-sms-api:
+    build:
+      context: ../..
+      dockerfile: docker/archer_sms/Dockerfile
+    container_name: mr200-sms-api
+    ports:
+      - "5333:5333"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5333/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
