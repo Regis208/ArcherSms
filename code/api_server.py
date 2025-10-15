@@ -26,19 +26,18 @@ ROUTER_PASSWORD = os.getenv("ROUTER_PASSWORD", "admin")
 # Instance globale du routeur
 router = None
 
-
 def get_router():
     """Obtenir ou créer une instance du routeur connectée"""
     global router
-    
+    router=None
     if router is None:
         logger.info("Création d'une nouvelle connexion au routeur...")
         router = TPLinkMR200(host=ROUTER_IP, password=ROUTER_PASSWORD)
         
-        if not router.login():
-            logger.error("Échec de connexion au routeur")
-            router = None
-            return None
+    if not router.login():
+        logger.error("Échec de connexion au routeur")
+        router = None
+        return None
     
     return router
 

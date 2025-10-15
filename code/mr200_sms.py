@@ -114,11 +114,11 @@ class TPLinkMR200:
     def login(self):
         """Se connecter au routeur"""
         # Récupérer les paramètres RSA
-        if not self.nn or not self.ee:
-            if not self.get_auth_params():
-                logger.error("✗ Impossible de récupérer les paramètres RSA")
-                return False
-        
+        #if not self.nn or not self.ee:
+        if not self.get_auth_params():
+            logger.error("✗ Impossible de récupérer les paramètres RSA")
+            return False
+    
         # Chiffrer les identifiants
         encrypted_password = self.rsa_encrypt(self.password)
         encrypted_username = self.rsa_encrypt("admin")
@@ -159,7 +159,7 @@ class TPLinkMR200:
                 # Récupérer le token
                 return self.get_token()
             else:
-                logger.error(f"✗ Échec de connexion: {response.status_code}")
+                logger.error(f"✗ login - Échec de connexion: {response.status_code}")
                 return False
                 
         except Exception as e:
