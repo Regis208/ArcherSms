@@ -8,7 +8,7 @@ import requests
 import base64
 import re
 import random
-import logging
+import logging 
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -210,6 +210,27 @@ class TPLinkMR200:
             logger.error(f"✗ Erreur lors de la récupération du token: {e}")
             return False
     
+    def close(self):
+        """Properly close the session and release resources"""
+        if self.session:
+            try:
+                self.session.close()
+                logger.info("✓ Session closed")
+            except Exception as e:
+                logger.warning(f"⚠ Error closing session: {e}")
+
+    def __del__(self):
+        """Cleanup when object is garbage collected"""
+        self.close()
+
+    def __enter__(self):
+        """Support context manager"""
+        return self
+
+    def __exit__(self, _exc_type, _exc_val, _exc_tb):
+        """Cleanup when exiting context manager"""
+        self.close()
+
     def send_sms(self, phone_number, message):
         """Envoyer un SMS"""
         # Format du payload avec CRLF

@@ -26,19 +26,31 @@ ROUTER_PASSWORD = os.getenv("ROUTER_PASSWORD", "admin")
 # Instance globale du routeur
 router = None
 
+def cleanup_router():
+    """Nettoyer proprement la connexion au routeur"""
+    global router
+    if router is not None:
+        try:
+            router.close()
+        except Exception as e:
+            logger.warning(f"Erreur lors du nettoyage: {e}")
+        finally:
+            router = None
+
 def get_router():
     """Obtenir ou créer une instance du routeur connectée"""
     global router
-    router=None
+
+    cleanup_router()
     if router is None:
         logger.info("Création d'une nouvelle connexion au routeur...")
         router = TPLinkMR200(host=ROUTER_IP, password=ROUTER_PASSWORD)
-        
-    if not router.login():
-        logger.error("Échec de connexion au routeur")
-        router = None
-        return None
-    
+
+        if not router.login():
+            logger.error("Échec de connexion au routeur")
+            cleanup_router()
+            return None
+
     return router
 
 
@@ -225,11 +237,10 @@ def send_sms():
             }), 200
         else:
             logger.error(f"✗ Échec d'envoi SMS à {phone}")
-            
+
             # Réinitialiser la connexion en cas d'échec
-            global router
-            router = None
-            
+            cleanup_router()
+
             return jsonify({
                 "error": "Failed to send SMS",
                 "success": False,
@@ -247,11 +258,8 @@ def send_sms():
 @app.route('/reconnect', methods=['POST'])
 def reconnect():
     """Forcer la reconnexion au routeur"""
-    global router
-    
-    logger.info("Reconnexion forcée au routeur...")
-    router = None
-    
+    logger.info("Reconnexion forcée au routeur...")    
+
     r = get_router()
     if r:
         logger.info("✓ Reconnexion réussie")
