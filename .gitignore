@@ -2,3 +2,5 @@ docker/archer_sms/.env
 docker/archer_sms/docker-compose-env.yml
 docker/archer_sms/docker-compose.override.yml
 intergration HA.txt
+code/__pycache__/*
+

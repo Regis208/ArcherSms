@@ -25,6 +25,7 @@ class TPLinkMR200:
         self.ee = None
         self.token = None
         self.jsessionid = None
+        self.max_retry = 3
         
     def get_auth_params(self):
         """Récupérer les paramètres RSA (nn, ee) du routeur"""
@@ -115,10 +116,14 @@ class TPLinkMR200:
         """Se connecter au routeur"""
         # Récupérer les paramètres RSA
         #if not self.nn or not self.ee:
-        if not self.get_auth_params():
-            logger.error("✗ Impossible de récupérer les paramètres RSA")
-            return False
-    
+        retry=0    
+        while (not (ok := self.get_auth_params())) and retry < self.max_retry:
+          retry=retry+1
+          logger.error(f"✗ Retreaving RSA parameters #{retry}")
+            
+        if not ok:
+          logger.error(f"✗ Impossible de récupérer les paramètres RSA ") 
+            
         # Chiffrer les identifiants
         encrypted_password = self.rsa_encrypt(self.password)
         encrypted_username = self.rsa_encrypt("admin")
